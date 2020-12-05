@@ -1,5 +1,10 @@
 function login(request, session, config) {
     
+    // Update these with your IdP -------
+    var domain = "https://keycloak-host"
+    var resource = "/auth/realms/tyk/protocol/openid-connect/token"
+    // ----------------------------------
+
     var credentials = request.Body.split("&")
         .map(function(item, index) {
             return item.split("=");
@@ -8,6 +13,7 @@ function login(request, session, config) {
              return p;
       }, {});
     
+    // Make API Call to get access token from IdP
     var newRequest = {
       "Headers": {"Content-Type": "application/x-www-form-urlencoded"},
       "Method": "POST",
@@ -16,10 +22,9 @@ function login(request, session, config) {
           client_id: credentials.client_id,
           client_secret: credentials.client_secret
       },
-      "Domain": "https://keycloak-host",
-      "resource": "/auth/realms/tyk/protocol/openid-connect/token",
+      "Domain": domain,
+      "resource": resource,
     };
-
     var response = TykMakeHttpRequest(JSON.stringify(newRequest));
     var usableResponse = JSON.parse(response);
     
@@ -31,6 +36,7 @@ function login(request, session, config) {
       }, session.meta_data)
     }
     
+    // Parse the response
     var bodyObj = JSON.parse(usableResponse.Body);
     var accessTokenComplete = bodyObj.access_token;
     var signature = accessTokenComplete.split(".")[2];
