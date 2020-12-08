@@ -1,6 +1,8 @@
 ## Split Token Flow using Tyk OSS Gateway
 
-this walks you through launching Tyk to act as a broker between your clients and IdP, to hide the full JWT access tokens and only ever present the signature (opaque token) to the client.  Then we can use this opaque token to access APIs, where Tyk will reconstruct the JWT and send it to the upstream.
+JWT Access Tokens can contain a lot of sensitive information.  Being merely encoded, and not encrypted, means that if they get in the wrong hands, everything contained inside the JWT is visible to the user with the key.  How do we fix this problem?
+
+One solution is to use the Split Token Flow.  This repo walks you through launching Tyk to act as a broker between your clients and IdP, to hide the full JWT access tokens and only ever present the signature (opaque token) to the client.  Then we can use this opaque token to access APIs, where Tyk will reconstruct the JWT and send it to the upstream.  This gives us the flexibility of using JWTs in the backend, without exposing it to the front-end.
 
 #### Prerequisites
 
